@@ -8,7 +8,7 @@ import { errorHandler } from './middlewares/errorHandler.middleware';
 import { HTTPSTATUS } from './config/http.config';
 import { asyncHandller } from './middlewares/asyncHandler.middleware';
 import { BadRequestException } from './utils/appError';
-import { ErrorCodeEnum } from './enums/error-code.enum';
+import { ErrorCodeEnum } from './enums/error-codee.num';
 
 
 const app = express();
