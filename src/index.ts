@@ -9,6 +9,11 @@ import { HTTPSTATUS } from './config/http.config';
 import { asyncHandller } from './middlewares/asyncHandler.middleware';
 import { BadRequestException } from './utils/appError';
 import { ErrorCodeEnum } from './enums/error-codee.num';
+import "./config/passport.config";
+import passport from 'passport';
+import authRoutes from './routes/auth.routes';
+import userRoutes from './routes/user.route';
+import isAuthenticated from './middlewares/isAuthenticated.middleware';
 
 
 const app = express();
@@ -29,6 +34,9 @@ app.use(
     })
 );
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(
     cors({
         origin: config.FRONTEND_ORIGIN,
@@ -43,7 +51,13 @@ app.get(
         return res.status(HTTPSTATUS.OK).json({
             message: "Hello, Welcome to Project management tool"
         });
-    }));
+    })
+);
+
+app.use(`${BASE_PATH}/auth`, authRoutes);
+app.use(`${BASE_PATH}/user`, isAuthenticated, userRoutes);
+
+
 
 app.use(errorHandler);
 
