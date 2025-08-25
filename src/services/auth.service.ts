@@ -53,13 +53,13 @@ export const loginOrCreateAccountService = async (data: {
             console.log("Account created:", account);
 
             // Create Workspace
-            const worksapce = await new WorkspaceModel({
+            const workspace = await new WorkspaceModel({
                 name: `${displayName}'s Workspace`,
                 description: `${displayName}'s personal workspace`,
                 owner: user._id,
             });
-            await worksapce.save({ session });
-            console.log("Workspace created:", worksapce);
+            await workspace.save({ session });
+            console.log("Workspace created:", workspace);
 
             // Get User Role
             const ownerRole = await RoleModel.findOne({
@@ -73,7 +73,7 @@ export const loginOrCreateAccountService = async (data: {
             // Create member
             const member = await new MemberModel({
                 userId: user._id,
-                workspaceId: worksapce._id,
+                workspaceId: workspace._id,
                 role: ownerRole._id,
                 joinedAt: new Date(),
             });
@@ -81,7 +81,7 @@ export const loginOrCreateAccountService = async (data: {
             await member.save({ session });
             console.log("Member created:", member);
 
-            user.currentWorkSpace = worksapce._id as mongoose.Types.ObjectId;
+            user.currentWorkSpace = workspace._id as mongoose.Types.ObjectId;
             await user.save({ session });
             console.log("User updated with current workspace:", user);
         }
