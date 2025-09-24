@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { asyncHandller } from "../middlewares/asyncHandler.middleware";
-import { changeMemberRoleSchema, createWorksapceSchema, workspaceIdSchema } from "../validation/workspace.validation";
+import { changeMemberRoleSchema, createWorksapceSchema, workspaceIdSchema, updateWorksapceSchema } from "../validation/workspace.validation";
 import { HTTPSTATUS } from "../config/http.config";
-import { changeMemberRoleService, createWorksapceService, getAllWorkspaceUserIsMemberService, getWorkspaceAnalyticsService, getWorkspaceByIdService, getWorkspcaeMembersService } from "../services/workspace.service";
+import { changeMemberRoleService, createWorksapceService, deleteWorkspaceByIdService, getAllWorkspaceUserIsMemberService, getWorkspaceAnalyticsService, getWorkspaceByIdService, getWorkspcaeMembersService, updateWorkSpaceByIdService } from "../services/workspace.service";
 import { getMemberRoleInWorkspace } from "../services/member.service";
 import { Permissions } from "../enums/role.enum";
 import { roleGuard } from "../utils/role.guard";
@@ -104,3 +104,44 @@ export const changeWorkspaceMemberRoleController = asyncHandller(
         )
     }
 );
+
+export const updateWorspaceController = asyncHandller(
+    async (req: Request, res: Response) => {
+        const workspaceId = workspaceIdSchema.parse(req.params.id);
+        const { name, description } = updateWorksapceSchema.parse(req.body);
+        const userId = req.user?._id;
+
+        const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+        roleGuard(role, [Permissions.EDIT_WORKSPACE]);
+
+        const { workspace } = await updateWorkSpaceByIdService(
+            workspaceId,
+            name,
+            description
+        )
+
+        return res.status(HTTPSTATUS.OK).json({
+            message: "Workspace updated successfully",
+            workspace
+        });
+    }
+);
+
+export const deleteWorksapceByIdController = asyncHandller(
+    async (req: Request, res: Response) => {
+        const workspaceId = workspaceIdSchema.parse(req.params.id);
+        const userId = req.user?._id;
+
+        const { role } = await getMemberRoleInWorkspace(userId, workspaceId);
+        roleGuard(role, [Permissions.DELETE_WORKSPACE]);
+
+        const { currentWorspace } = await deleteWorkspaceByIdService(
+            workspaceId,
+            userId
+        )
+
+        return res.status(HTTPSTATUS.OK).json({
+            message: "Workspace deleted successfully",
+            currentWorspace
+        });
+    });
