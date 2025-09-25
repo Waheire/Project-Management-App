@@ -27,7 +27,7 @@ export const createProjectSchema = z.object({
 });
 
 export const updateProjectSchema = z.object({
-  name: nameSchema.optional(),
+  name: nameSchema,
   description: descriptionSchema,
   emoji: emojiSchema,
 })
