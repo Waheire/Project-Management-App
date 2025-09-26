@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response  } from "express";
-import { sys } from "typescript";
 
 type AsyncControllerType = (
     req:Request,
