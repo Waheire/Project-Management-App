@@ -10,7 +10,7 @@ export interface UserDocument extends Document {
     lastLogin: Date | null;
     createdAt: Date;
     updatedAt: Date;
-    currentWorkSpace: mongoose.Types.ObjectId | null;
+    currentWorkspace: mongoose.Types.ObjectId | null;
     comparePassword(value: string): Promise<boolean>;
     omitPassword(): Omit<UserDocument, "password">;
 }
@@ -37,7 +37,7 @@ const userSchema = new Schema<UserDocument>(
             type: String,
             default: null,
         },
-        currentWorkSpace: {
+        currentWorkspace: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Workspace"
         },
@@ -61,7 +61,6 @@ userSchema.pre("save", async function (next) {
             this.password = await hashValue(this.password)
         }
     }
-    next();
 });
 
 

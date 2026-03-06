@@ -54,7 +54,7 @@ export const createWorksapceService = async (
 
     await member.save();
 
-    user.currentWorkSpace = workspace._id as mongoose.Types.ObjectId;
+    user.currentWorkspace = workspace._id as mongoose.Types.ObjectId;
     await user.save();
 
     return { workspace };
@@ -231,18 +231,18 @@ export const deleteWorkspaceByIdService = async (
         await TaskModel.deleteMany({ workspace: workspace._id }).session(session);
         await MemberModel.deleteMany({ workspaceId: workspace._id }).session(session);
 
-        if (user?.currentWorkSpace?.equals(workspaceId)) {
+        if (user?.currentWorkspace?.equals(workspaceId)) {
             const memberWorkspace = await MemberModel.findOne({ userId: user._id }).session(session);
 
             // update the user's current worspace
-            user.currentWorkSpace = memberWorkspace ? memberWorkspace.workspaceId : null;
+            user.currentWorkspace = memberWorkspace ? memberWorkspace.workspaceId : null;
             await user.save({ session });
         }
         await workspace.deleteOne({ session });
         await session.commitTransaction();
         session.endSession();
 
-        return { currentWorspace: user.currentWorkSpace };
+        return { currentWorspace: user.currentWorkspace };
 
     } catch (error) {
         await session.abortTransaction();

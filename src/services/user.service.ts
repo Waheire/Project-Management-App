@@ -3,7 +3,7 @@ import { NotFoundException } from "../utils/appError";
 
 export const getCurrentUserService = async (userId: string) => {
     const user = await UserModel.findById(userId)
-        .populate("currentWorkSpace")
+        .populate("currentWorkspace")
         .select("-password");
 
     if (!user) {
